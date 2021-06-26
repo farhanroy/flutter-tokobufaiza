@@ -14,9 +14,9 @@ class RouteService {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteName.SplashScreen:
-        return MaterialPageRoute(builder: (_) => HomeScreen());
-      case RouteName.HomeScreen:
         return MaterialPageRoute(builder: (_) => SplashScreen());
+      case RouteName.HomeScreen:
+        return MaterialPageRoute(builder: (_) => HomeScreen());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
