@@ -9,11 +9,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
-    if (event is DashboardScreenEvent) {
-      yield HomeState(status: HomeStatus.DashboardScreen);
-      print("AAAAAAAAAAAAAAAAAAAAAAAA");
-    } else if (event is AboutScreenEvent) {
-      yield HomeState(status: HomeStatus.AboutScreen);
+    if (event is ProductEvent) {
+      yield HomeState(status: HomeStatus.ProductScreen);
+    } else if (event is SettingEvent) {
+      yield HomeState(status: HomeStatus.SettingScreen);
     }
   }
 }

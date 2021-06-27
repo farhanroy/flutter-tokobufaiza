@@ -22,10 +22,10 @@ class _HomeView extends StatelessWidget {
       body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           switch(state.status) {
-            case HomeStatus.DashboardScreen:
-              return Text("Dashboard");
-            case HomeStatus.AboutScreen:
-              return Text("About");
+            case HomeStatus.ProductScreen:
+              return Text("Product");
+            case HomeStatus.SettingScreen:
+              return Text("Setting");
             default:
               return Text("Empty");
           }
@@ -48,7 +48,7 @@ class _HomeDrawer extends StatelessWidget {
             title: Text("Dashboard"),
             onTap: () {
               Navigator.pop(context);
-              context.read<HomeBloc>().add(DashboardScreenEvent());
+              context.read<HomeBloc>().add(ProductEvent());
             },
           ),
           ListTile(
@@ -56,7 +56,7 @@ class _HomeDrawer extends StatelessWidget {
             title: Text("About"),
             onTap: () {
               Navigator.pop(context);
-              context.read<HomeBloc>().add(AboutScreenEvent());
+              context.read<HomeBloc>().add(SettingEvent());
             },
           )
         ],

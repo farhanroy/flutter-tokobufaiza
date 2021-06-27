@@ -1,12 +1,12 @@
 part of 'HomeBloc.dart';
 
-enum HomeStatus { DashboardScreen, AboutScreen }
+enum HomeStatus { ProductScreen, SettingScreen }
 
 class HomeState extends Equatable {
   final HomeStatus status;
 
   HomeState({
-    this.status = HomeStatus.DashboardScreen,
+    this.status = HomeStatus.ProductScreen,
   });
 
   HomeState copyWith({HomeStatus? status}) {
