@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tokobufaiza/src/modules/product/dashboard/DashboardProductScreen.dart';
 
 import 'HomeBloc.dart';
 
@@ -23,7 +24,7 @@ class _HomeView extends StatelessWidget {
         builder: (context, state) {
           switch(state.status) {
             case HomeStatus.ProductScreen:
-              return Text("Product");
+              return DashboardProductScreen();
             case HomeStatus.SettingScreen:
               return Text("Setting");
             default:
@@ -43,6 +44,7 @@ class _HomeDrawer extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.only(top: 8.0),
         children: <Widget>[
+          DrawerHeader(child: Container()),
           ListTile(
             leading: Icon(Icons.dashboard),
             title: Text("Dashboard"),

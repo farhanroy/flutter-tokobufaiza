@@ -1,15 +1,20 @@
 import '../sources/local/dao/ProductDao.dart';
 import '../sources/local/entity/ProductEntity.dart';
 
-class ProductRepository {
-  late ProductDao _dao;
+class ProductNotFoundFailure implements Exception {}
 
-  ProductRepository() {
-    _dao = ProductDao();
-  }
+class ProductRepository {
+  ProductRepository({ProductDao? productDao}):
+        _dao = productDao ?? ProductDao();
+
+  final ProductDao _dao;
 
   Future<List<ProductEntity>> getProducts() async {
-    var products = await _dao.getProducts();
+    final products = await _dao.getProducts();
+
+    if (products == null) {
+      throw ProductNotFoundFailure();
+    }
     return products;
   }
 }
