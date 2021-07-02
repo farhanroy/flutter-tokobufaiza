@@ -1,23 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../data/sources/local/entity/ProductEntity.dart';
-import '../../../data/repositories/ProductRepository.dart';
+import '../../../models/Product.dart';
+import '../../../repositories/ProductRepository.dart';
 
 enum DashboardProductStatus { initial, loading, success, failure }
 
 class DashboardProductState extends Equatable {
   DashboardProductState({
     this.status = DashboardProductStatus.initial,
-    List<ProductEntity>? products
+    List<Product>? products
   }): this.products = products;
 
   final DashboardProductStatus status;
-  final List<ProductEntity>? products;
+  final List<Product>? products;
 
   DashboardProductState copyWith({
     DashboardProductStatus? status,
-    List<ProductEntity>? products
+    List<Product>? products
   }) {
     return DashboardProductState(
         status: status ?? this.status,
@@ -34,9 +34,10 @@ class DashboardProductBloc extends Cubit<DashboardProductState>{
 
   DashboardProductBloc() : super(DashboardProductState()) {
     _productRepository = ProductRepository();
+    getProducts();
   }
 
-  Future<ProductEntity?> getProducts() async {
+  Future<Product?> getProducts() async {
     emit(state.copyWith(status: DashboardProductStatus.loading));
 
     try {

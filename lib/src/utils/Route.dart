@@ -25,7 +25,7 @@ class RouteService {
       case RouteName.DashboardProductScreen:
         return MaterialPageRoute(builder: (_) => DashboardProductScreen());
       case RouteName.AddProductScreen:
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(builder: (_) => AddProductScreen());
       case RouteName.DetailProductScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case RouteName.SplashScreen:
