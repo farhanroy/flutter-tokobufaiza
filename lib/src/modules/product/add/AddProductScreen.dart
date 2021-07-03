@@ -51,13 +51,16 @@ class _AddProductForm extends StatelessWidget {
         }
 
       },
-      child: Column(
-        children: [
-          const SizedBox(height: 96.0),
-          _AddProductTitleInput(),
-          const SizedBox(height: 16.0),
-          _AddProductSubmitButton()
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 96.0),
+            _AddProductTitleInput(),
+            const SizedBox(height: 16.0),
+            _AddProductSubmitButton()
+          ],
+        ),
       ),
     );
   }
