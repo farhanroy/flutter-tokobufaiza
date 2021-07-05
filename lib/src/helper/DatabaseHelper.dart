@@ -31,6 +31,6 @@ class DatabaseHelper {
   void _onCreate(Database db, int version) async {
     // When creating the db, create the table
     await db.execute(
-        "CREATE TABLE product(id INTEGER PRIMARY KEY, title TEXT)");
+        "CREATE TABLE product(id INTEGER PRIMARY KEY, title TEXT, price TEXT, imagePath TEXT)");
   }
 }

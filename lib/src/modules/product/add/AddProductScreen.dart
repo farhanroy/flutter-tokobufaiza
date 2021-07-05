@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:tokobufaiza/src/utils/Route.dart';
 
 import '../../../repositories/ProductRepository.dart';
 import 'AddProductBloc.dart';
@@ -36,33 +39,63 @@ class _AddProductForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AddProductBloc, AddProductState>(
       listener: (context, state) {
-
         /// when submit form failure will showing snack bar
         if (state.status.isSubmissionFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Authentication Failure')),
+            const SnackBar(content: Text('Add product failure')),
           );
         }
 
         /// when submit form success will back to dashboard screen
         if (state.status.isSubmissionSuccess) {
           Navigator.pushNamedAndRemoveUntil(
-              context, '/product/dashboard', (route) => false);
+              context, RouteName.DashboardProductScreen, (route) => false);
         }
-
       },
       child: Padding(
         padding: const EdgeInsets.all(32.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 96.0),
-            _AddProductTitleInput(),
-            const SizedBox(height: 16.0),
-            _AddProductSubmitButton()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 54.0),
+              _AddProductImagePicker(),
+              const SizedBox(height: 16.0),
+              _AddProductTitleInput(),
+              const SizedBox(height: 16.0),
+              _AddProductPriceInput(),
+              const SizedBox(height: 16.0),
+              _AddProductSubmitButton()
+            ],
+          ),
         ),
       ),
     );
+  }
+}
+
+class _AddProductImagePicker extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final maxWidth = MediaQuery.of(context).size.width;
+    return BlocBuilder<AddProductBloc, AddProductState>(
+        builder: (context, state) {
+      if (state.imagePath.pure) {
+        return GestureDetector(
+          onTap: () => context.read<AddProductBloc>().pickImage(),
+          child: Container(
+            width: maxWidth,
+            height: 300.0,
+            color: Colors.grey,
+            child: Icon(
+              Icons.add_a_photo,
+              color: Colors.black54,
+            ),
+          ),
+        );
+      } else {
+        return Image.file(File(state.imagePath.value!));
+      }
+    });
   }
 }
 
@@ -77,6 +110,23 @@ class _AddProductTitleInput extends StatelessWidget {
         decoration: InputDecoration(
           labelText: 'Title',
           errorText: state.title.invalid ? 'invalid title' : null,
+        ),
+      );
+    });
+  }
+}
+
+class _AddProductPriceInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddProductBloc, AddProductState>(
+        builder: (context, state) {
+      return TextField(
+        onChanged: (value) =>
+            context.read<AddProductBloc>().priceChanged(value),
+        decoration: InputDecoration(
+          labelText: 'Price',
+          errorText: state.price.invalid ? 'invalid price' : null,
         ),
       );
     });
