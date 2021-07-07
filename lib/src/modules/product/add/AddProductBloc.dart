@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:formz/formz.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -41,8 +42,6 @@ class AddProductBloc extends Cubit<AddProductState> {
   AddProductBloc({required this.productRepository})
       : super(const AddProductState());
 
-  late PickedFile? pickedFile;
-
   void titleChanged(String value) {
     final title = DefaultValidator.dirty(value);
     emit(state.copyWith(
@@ -76,10 +75,29 @@ class AddProductBloc extends Cubit<AddProductState> {
   Future<void> pickImage() async {
     final ImagePicker _picker = ImagePicker();
     try {
-      pickedFile = await _picker.getImage(source: ImageSource.camera);
-      imagePathChanged(pickedFile!.path);
+      var pickedFile = await _picker.getImage(
+        source: ImageSource.camera,
+      );
+      await compressFile(pickedFile!.path);
     } catch (e) {
-      // TODO (adding exception when fail pick image)
+      throw Exception(e);
+    }
+  }
+
+  Future<void> compressFile(String filePath) async {
+    final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+    final splitImage = filePath.substring(0, (lastIndex));
+    final outPath = "${splitImage}_out${filePath.substring(lastIndex)}";
+    try {
+      var result = await FlutterImageCompress.compressAndGetFile(
+        filePath,
+        outPath,
+        quality: 50,
+      );
+      print(result!.lengthSync());
+      imagePathChanged(result.path);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
