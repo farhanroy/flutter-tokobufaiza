@@ -6,6 +6,8 @@ class CreateProductFailure implements Exception {}
 
 class GetProductsFailure implements Exception {}
 
+class GetDetailProductFailure implements Exception {}
+
 class ProductRepository {
   ProductRepository({DatabaseHelper? databaseHelper})
       : _databaseHelper = databaseHelper ?? DatabaseHelper();
@@ -39,6 +41,17 @@ class ProductRepository {
       return products;
     } catch (e) {
       throw GetProductsFailure();
+    }
+  }
+
+  Future<Product?> getDetailProduct(int id) async {
+    try {
+      var client = await _databaseHelper.db;
+      List<Map> list = await client!.rawQuery('SELECT $id FROM ${Constants.PRODUCT_TABLE}');
+      Product product = Product.map(list.first);
+      return product;
+    } catch (e) {
+      throw GetDetailProductFailure();
     }
   }
 }

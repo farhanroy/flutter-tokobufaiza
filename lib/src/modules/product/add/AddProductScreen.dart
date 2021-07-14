@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:tokobufaiza/src/utils/Route.dart';
 
+import '../../../utils/Route.dart';
 import '../../../repositories/ProductRepository.dart';
 import 'AddProductBloc.dart';
 
@@ -49,7 +49,7 @@ class _AddProductForm extends StatelessWidget {
         /// when submit form success will back to dashboard screen
         if (state.status.isSubmissionSuccess) {
           Navigator.pushNamedAndRemoveUntil(
-              context, RouteName.DashboardProductScreen, (route) => false);
+              context, RouteName.HomeScreen, (route) => false);
         }
       },
       child: Padding(

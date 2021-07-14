@@ -36,7 +36,9 @@ class _DashboardProductView extends StatelessWidget {
             case DashboardProductStatus.loading:
               return LoadingComponent();
             case DashboardProductStatus.failure:
-              return FailureComponent(message: "Failure",);
+              return FailureComponent(
+                message: "Failure",
+              );
             case DashboardProductStatus.success:
               return _DashboardProductList(products: state.products!);
             default:
@@ -49,7 +51,6 @@ class _DashboardProductView extends StatelessWidget {
 }
 
 class _DashboardProductList extends StatelessWidget {
-
   final List<Product> products;
 
   const _DashboardProductList({Key? key, required this.products})
@@ -65,8 +66,11 @@ class _DashboardProductList extends StatelessWidget {
             leading: Image.file(imagePath),
             title: Text(products[index].title),
             subtitle: Text(products[index].price),
+            onTap: () {
+              Navigator.pushNamed(context, RouteName.DetailProductScreen,
+                  arguments: products[index].id);
+            },
           );
-        }
-    );
+        });
   }
 }

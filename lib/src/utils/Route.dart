@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../modules/product/ProductModule.dart';
 import '../modules/home/HomeScreen.dart';
+import '../modules/product/ProductModule.dart';
 import '../modules/splash/SplashScreen.dart';
 
 class RouteName {
@@ -27,7 +27,8 @@ class RouteService {
       case RouteName.AddProductScreen:
         return MaterialPageRoute(builder: (_) => AddProductScreen());
       case RouteName.DetailProductScreen:
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(
+            builder: (_) => DetailProductScreen(id: settings.arguments as int));
       case RouteName.SplashScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       default:
