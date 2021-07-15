@@ -67,8 +67,10 @@ class _DashboardProductList extends StatelessWidget {
             title: Text(products[index].title),
             subtitle: Text(products[index].price),
             onTap: () {
-              Navigator.pushNamed(context, RouteName.DetailProductScreen,
-                  arguments: products[index].id);
+              Navigator.of(context).pushNamed(
+                  RouteName.DetailProductScreen,
+                arguments: ScreenArguments<int>(products[index].id)
+              );
             },
           );
         });

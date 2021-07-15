@@ -47,10 +47,11 @@ class ProductRepository {
   Future<Product?> getDetailProduct(int id) async {
     try {
       var client = await _databaseHelper.db;
-      List<Map> list = await client!.rawQuery('SELECT $id FROM ${Constants.PRODUCT_TABLE}');
+      List<Map> list = await client!.rawQuery('SELECT * FROM ${Constants.PRODUCT_TABLE} where id = $id');
       Product product = Product.map(list.first);
       return product;
     } catch (e) {
+      print(e);
       throw GetDetailProductFailure();
     }
   }

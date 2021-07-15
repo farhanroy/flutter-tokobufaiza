@@ -27,8 +27,9 @@ class RouteService {
       case RouteName.AddProductScreen:
         return MaterialPageRoute(builder: (_) => AddProductScreen());
       case RouteName.DetailProductScreen:
+        final args = settings.arguments as ScreenArguments<int>;
         return MaterialPageRoute(
-            builder: (_) => DetailProductScreen(id: settings.arguments as int));
+            builder: (_) => DetailProductScreen(id: args.data));
       case RouteName.SplashScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       default:
@@ -39,4 +40,10 @@ class RouteService {
                 ));
     }
   }
+}
+
+class ScreenArguments<T> {
+  final T data;
+
+  ScreenArguments(this.data);
 }

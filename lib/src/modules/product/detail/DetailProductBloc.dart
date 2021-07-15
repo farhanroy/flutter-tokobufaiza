@@ -30,9 +30,11 @@ class DetailProductState extends Equatable {
 }
 
 class DetailProductBloc extends Cubit<DetailProductState> {
+  final int id;
   final ProductRepository productRepository;
 
-  DetailProductBloc({required this.productRepository}) : super(const DetailProductState());
+  DetailProductBloc({required this.id, required this.productRepository})
+      : super(const DetailProductState()) { getDetailProduct(id); }
 
   Future<void> getDetailProduct(int id) async {
     emit(state.copyWith(status: DetailProductStatus.loading));
@@ -42,7 +44,7 @@ class DetailProductBloc extends Cubit<DetailProductState> {
           product: result,
           status: DetailProductStatus.success
       ));
-    } catch(e) {
+    } on Exception {
       emit(state.copyWith(status: DetailProductStatus.failure));
     }
   }

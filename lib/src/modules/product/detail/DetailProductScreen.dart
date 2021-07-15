@@ -4,8 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../components/EmptyComponent.dart';
 import '../../../components/FailureComponent.dart';
 import '../../../components/LoadingComponent.dart';
-import 'DetailProductBloc.dart';
+import '../../../models/Product.dart';
 import '../../../repositories/ProductRepository.dart';
+import 'DetailProductBloc.dart';
 
 class DetailProductScreen extends StatelessWidget {
   final int id;
@@ -14,7 +15,10 @@ class DetailProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DetailProductBloc>(
-      create: (_) => DetailProductBloc(productRepository: ProductRepository()),
+      create: (_) => DetailProductBloc(
+          id: id,
+          productRepository: ProductRepository(),
+      ),
       child: _DetailProductView(),
     );
   }
@@ -34,16 +38,16 @@ class _DetailProductView extends StatelessWidget {
       body: BlocBuilder<DetailProductBloc, DetailProductState>(
         builder: (context, state) {
           if (state.status == DetailProductStatus.success) {
-            return _PopulateDetailProduct();
+            return _PopulateDetailProduct(product: state.product!,);
           }
           else if (state.status == DetailProductStatus.loading) {
             return LoadingComponent();
           }
           else if (state.status == DetailProductStatus.failure) {
-            return FailureComponent(message: "");
+            return FailureComponent(message: "Error");
           }
           else {
-            return EmptyComponent(message: "");
+            return EmptyComponent(message: "Empty");
           }
         }
       ),
@@ -52,17 +56,18 @@ class _DetailProductView extends StatelessWidget {
 }
 
 class _PopulateDetailProduct extends StatelessWidget {
+  final Product product;
+
+  const _PopulateDetailProduct({Key? key, required this.product}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
         children: [
-
+          Text(product.imagePath)
         ],
       ),
     );
   }
 }
-
-
