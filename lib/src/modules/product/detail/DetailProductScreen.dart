@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -61,11 +63,16 @@ class _PopulateDetailProduct extends StatelessWidget {
   const _PopulateDetailProduct({Key? key, required this.product}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    File imagePath = File(product.imagePath);
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
         children: [
-          Text(product.imagePath)
+          Image.file(imagePath),
+          const SizedBox(height: 20,),
+          Text(product.title, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
+          const SizedBox(height: 10,),
+          Text("Harga: ${product.price}", style: TextStyle(fontSize: 20),)
         ],
       ),
     );
