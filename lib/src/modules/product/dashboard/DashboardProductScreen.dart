@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../repositories/ProductRepository.dart';
 import '../../../components/EmptyComponent.dart';
 import '../../../components/FailureComponent.dart';
 import '../../../components/LoadingComponent.dart';
@@ -14,7 +15,9 @@ class DashboardProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DashboardProductBloc>(
-      create: (_) => DashboardProductBloc(),
+      create: (_) => DashboardProductBloc(
+        context.read<ProductRepository>()
+      ),
       child: _DashboardProductView(),
     );
   }

@@ -12,7 +12,9 @@ class AddProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AddProductBloc>(
-      create: (_) => AddProductBloc(productRepository: ProductRepository()),
+      create: (_) => AddProductBloc(
+          productRepository: context.read<ProductRepository>()
+      ),
       child: _AddProductView(),
     );
   }

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../repositories/ProductRepository.dart';
 import '../../../models/Product.dart';
 
-enum DetailProductStatus { initial, success, loading, failure }
+enum DetailProductStatus { initial, success, loading, failure, successDelete }
 
 class DetailProductState extends Equatable {
   final Product? product;
@@ -34,9 +34,9 @@ class DetailProductBloc extends Cubit<DetailProductState> {
   final ProductRepository productRepository;
 
   DetailProductBloc({required this.id, required this.productRepository})
-      : super(const DetailProductState()) { getDetailProduct(id); }
+      : super(const DetailProductState()) { getDetailProduct(); }
 
-  Future<void> getDetailProduct(int id) async {
+  Future<void> getDetailProduct() async {
     emit(state.copyWith(status: DetailProductStatus.loading));
     try {
       var result = await productRepository.getDetailProduct(id);
@@ -48,4 +48,30 @@ class DetailProductBloc extends Cubit<DetailProductState> {
       emit(state.copyWith(status: DetailProductStatus.failure));
     }
   }
+
+  Future<void> updateProduct() async {
+    emit(state.copyWith(status: DetailProductStatus.loading));
+    try {
+      var result = await productRepository.getDetailProduct(id);
+      emit(state.copyWith(
+          product: result,
+          status: DetailProductStatus.success
+      ));
+    } on Exception {
+      emit(state.copyWith(status: DetailProductStatus.failure));
+    }
+  }
+
+  Future<void> deleteProduct() async {
+    emit(state.copyWith(status: DetailProductStatus.loading));
+    try {
+      await productRepository.deleteProduct(id);
+      emit(state.copyWith(
+          status: DetailProductStatus.successDelete
+      ));
+    } on Exception {
+      emit(state.copyWith(status: DetailProductStatus.failure));
+    }
+  }
+
 }

@@ -8,6 +8,8 @@ class GetProductsFailure implements Exception {}
 
 class GetDetailProductFailure implements Exception {}
 
+class DeleteProductFailure implements Exception {}
+
 class ProductRepository {
   ProductRepository({DatabaseHelper? databaseHelper})
       : _databaseHelper = databaseHelper ?? DatabaseHelper();
@@ -47,12 +49,25 @@ class ProductRepository {
   Future<Product?> getDetailProduct(int id) async {
     try {
       var client = await _databaseHelper.db;
-      List<Map> list = await client!.rawQuery('SELECT * FROM ${Constants.PRODUCT_TABLE} where id = $id');
+      List<Map> list = await client!
+          .rawQuery('SELECT * FROM ${Constants.PRODUCT_TABLE} where id = $id');
       Product product = Product.map(list.first);
       return product;
     } catch (e) {
-      print(e);
       throw GetDetailProductFailure();
+    }
+  }
+
+  Future<void> deleteProduct(int id) async {
+    try {
+      var client = await _databaseHelper.db;
+      await client!.delete(
+        Constants.PRODUCT_TABLE,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    } catch (e) {
+      throw DeleteProductFailure();
     }
   }
 }

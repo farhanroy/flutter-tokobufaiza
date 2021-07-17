@@ -30,10 +30,9 @@ class DashboardProductState extends Equatable {
 }
 
 class DashboardProductBloc extends Cubit<DashboardProductState>{
-  late ProductRepository _productRepository;
+  final ProductRepository productRepository;
 
-  DashboardProductBloc() : super(DashboardProductState()) {
-    _productRepository = ProductRepository();
+  DashboardProductBloc(this.productRepository) : super(DashboardProductState()) {
     getProducts();
   }
 
@@ -41,7 +40,7 @@ class DashboardProductBloc extends Cubit<DashboardProductState>{
     emit(state.copyWith(status: DashboardProductStatus.loading));
 
     try {
-      var _products = await _productRepository.getProducts();
+      var _products = await productRepository.getProducts();
       emit(state.copyWith(
           status: DashboardProductStatus.success,
         products: _products
