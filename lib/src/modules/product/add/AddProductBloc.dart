@@ -104,10 +104,10 @@ class AddProductBloc extends Cubit<AddProductState> {
   Future<void> submitForm() async {
     if (!state.status.isValidated) return;
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
-
     try {
+      int generatedId = DateTime.now().millisecondsSinceEpoch;
       var product = Product(
-          id: 0,
+          id: generatedId,
           title: state.title.value!,
           price: state.price.value!,
           imagePath: state.imagePath.value!);

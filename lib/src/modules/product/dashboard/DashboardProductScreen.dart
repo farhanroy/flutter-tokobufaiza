@@ -45,7 +45,7 @@ class _DashboardProductView extends StatelessWidget {
             case DashboardProductStatus.success:
               return _DashboardProductList(products: state.products!);
             default:
-              return EmptyComponent(message: "Empty");
+              return const EmptyComponent(message: "Empty");
           }
         },
       ),
@@ -72,7 +72,7 @@ class _DashboardProductList extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed(
                   RouteName.DetailProductScreen,
-                arguments: ScreenArguments<int>(products[index].id)
+                  arguments: ScreenArguments<int>(products[index].id)
               );
             },
           );

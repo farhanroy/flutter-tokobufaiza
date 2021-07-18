@@ -10,6 +10,8 @@ class GetDetailProductFailure implements Exception {}
 
 class DeleteProductFailure implements Exception {}
 
+class SearchProductFailure implements Exception {}
+
 class ProductRepository {
   ProductRepository({DatabaseHelper? databaseHelper})
       : _databaseHelper = databaseHelper ?? DatabaseHelper();
@@ -68,6 +70,28 @@ class ProductRepository {
       );
     } catch (e) {
       throw DeleteProductFailure();
+    }
+  }
+
+  Future<List<Product>?> searchProduct(String query) async {
+    try {
+      var client = await _databaseHelper.db;
+      List<Map> list = await client!.rawQuery(
+          "SELECT * FROM ${Constants.PRODUCT_TABLE} WHERE title LIKE '%$query%' ");
+      List<Product> products = List.empty(growable: true);
+      for (int i = 0; i < list.length; i++) {
+        var product = new Product(
+          id: list[i]["id"],
+          title: list[i]["title"],
+          price: list[i]["price"],
+          imagePath: list[i]["imagePath"],
+        );
+        products.add(product);
+      }
+      return products;
+    } catch (e) {
+      print(e);
+      throw SearchProductFailure();
     }
   }
 }
