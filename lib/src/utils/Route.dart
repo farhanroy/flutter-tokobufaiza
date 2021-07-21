@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/Product.dart';
 import '../modules/home/HomeScreen.dart';
 import '../modules/product/ProductModule.dart';
 import '../modules/splash/SplashScreen.dart';
@@ -11,6 +12,7 @@ class RouteName {
   static const String HomeScreen = "/";
   static const String DashboardProductScreen = "/product/dashboard";
   static const String AddProductScreen = "/product/add";
+  static const String UpdateProductScreen = "/product/update";
   static const String DetailProductScreen = "/product/detail";
   static const String SettingScreen = "/setting";
 }
@@ -30,6 +32,10 @@ class RouteService {
         final args = settings.arguments as ScreenArguments<int>;
         return MaterialPageRoute(
             builder: (_) => DetailProductScreen(id: args.data));
+      case RouteName.UpdateProductScreen:
+        final args = settings.arguments as ScreenArguments<Product>;
+        return MaterialPageRoute(
+            builder: (_) => UpdateProductScreen(product: args.data));
       case RouteName.SplashScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       default:

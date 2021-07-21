@@ -3,24 +3,25 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../utils/Route.dart';
 import '../../../components/EmptyComponent.dart';
 import '../../../components/FailureComponent.dart';
 import '../../../components/LoadingComponent.dart';
 import '../../../models/Product.dart';
 import '../../../repositories/ProductRepository.dart';
+import '../../../utils/Route.dart';
 import 'DetailProductBloc.dart';
 
 class DetailProductScreen extends StatelessWidget {
   final int id;
 
   const DetailProductScreen({Key? key, required this.id}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DetailProductBloc>(
       create: (_) => DetailProductBloc(
-          id: id,
-          productRepository: context.read<ProductRepository>(),
+        id: id,
+        productRepository: context.read<ProductRepository>(),
       ),
       child: _DetailProductView(),
     );
@@ -31,11 +32,12 @@ class _DetailProductView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<DetailProductBloc, DetailProductState>(
-        listener: (context, state) {
-          if (state.status == DetailProductStatus.successDelete) {
-            Navigator.pushNamedAndRemoveUntil(context, RouteName.HomeScreen, (route) => false);
-          }
-        },
+      listener: (context, state) {
+        if (state.status == DetailProductStatus.successDelete) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, RouteName.HomeScreen, (route) => false);
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -46,30 +48,30 @@ class _DetailProductView extends StatelessWidget {
           actions: [
             IconButton(
                 icon: Icon(Icons.delete),
-                onPressed: () => _showDeleteDialog(context)
-            ),
+                onPressed: () => _showDeleteDialog(context)),
             IconButton(
               icon: Icon(Icons.edit),
-              onPressed: () => context.read<DetailProductBloc>().updateProduct(),
+              onPressed: () {
+                Navigator.pushNamed(context, RouteName.UpdateProductScreen,
+                    arguments: ScreenArguments(context.read<DetailProductBloc>().state.product!));
+              },
             )
           ],
         ),
         body: BlocBuilder<DetailProductBloc, DetailProductState>(
             builder: (context, state) {
-              if (state.status == DetailProductStatus.success) {
-                return _PopulateDetailProduct(product: state.product!,);
-              }
-              else if (state.status == DetailProductStatus.loading) {
-                return LoadingComponent();
-              }
-              else if (state.status == DetailProductStatus.failure) {
-                return FailureComponent(message: "Error");
-              }
-              else {
-                return EmptyComponent(message: "Empty");
-              }
-            }
-        ),
+          if (state.status == DetailProductStatus.success) {
+            return _PopulateDetailProduct(
+              product: state.product!,
+            );
+          } else if (state.status == DetailProductStatus.loading) {
+            return LoadingComponent();
+          } else if (state.status == DetailProductStatus.failure) {
+            return FailureComponent(message: "Error");
+          } else {
+            return EmptyComponent(message: "Empty");
+          }
+        }),
       ),
     );
   }
@@ -93,8 +95,7 @@ class _DetailProductView extends StatelessWidget {
             ),
             TextButton(
               child: new Text("Cancel"),
-              onPressed: () {
-              },
+              onPressed: () {},
             ),
           ],
         );
@@ -106,7 +107,9 @@ class _DetailProductView extends StatelessWidget {
 class _PopulateDetailProduct extends StatelessWidget {
   final Product product;
 
-  const _PopulateDetailProduct({Key? key, required this.product}) : super(key: key);
+  const _PopulateDetailProduct({Key? key, required this.product})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     File imagePath = File(product.imagePath);
@@ -115,10 +118,20 @@ class _PopulateDetailProduct extends StatelessWidget {
       child: Column(
         children: [
           Image.file(imagePath),
-          const SizedBox(height: 20,),
-          Text(product.title, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
-          const SizedBox(height: 10,),
-          Text("Price: ${product.price}", style: TextStyle(fontSize: 20),)
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            product.title,
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            "Price: ${product.price}",
+            style: TextStyle(fontSize: 20),
+          )
         ],
       ),
     );

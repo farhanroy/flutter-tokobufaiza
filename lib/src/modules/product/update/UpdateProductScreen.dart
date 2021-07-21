@@ -4,51 +4,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
-import '../../../utils/Route.dart';
+import '../../../models/Product.dart';
 import '../../../repositories/ProductRepository.dart';
-import 'AddProductBloc.dart';
+import '../../../utils/Route.dart';
+import 'UpdateProductBloc.dart';
 
-class AddProductScreen extends StatelessWidget {
+class UpdateProductScreen extends StatelessWidget {
+  final Product product;
+
+  const UpdateProductScreen({Key? key, required this.product})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AddProductBloc>(
-      create: (_) => AddProductBloc(
-          productRepository: context.read<ProductRepository>()
-      ),
-      child: _AddProductView(),
+    return BlocProvider<UpdateProductBloc>(
+      create: (_) => UpdateProductBloc(
+          product: product,
+          productRepository: context.read<ProductRepository>())..initialForm(),
+      child: _UpdateProductView(),
     );
   }
 }
 
-class _AddProductView extends StatelessWidget {
+class _UpdateProductView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.close),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("Add product"),
+        title: const Text("Update product"),
       ),
-      body: _AddProductForm(),
+      body: _UpdateProductForm(),
     );
   }
 }
 
-class _AddProductForm extends StatelessWidget {
+class _UpdateProductForm extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AddProductBloc, AddProductState>(
+    return BlocListener<UpdateProductBloc, UpdateProductState>(
       listener: (context, state) {
-        /// when submit form failure will showing snack bar
-        if (state.status.isSubmissionFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add product failure')),
-          );
-        }
-
-        /// when submit form success will back to dashboard screen
         if (state.status.isSubmissionSuccess) {
           Navigator.pushNamedAndRemoveUntil(
               context, RouteName.HomeScreen, (route) => false);
@@ -60,13 +59,13 @@ class _AddProductForm extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 54.0),
-              _AddProductImagePicker(),
+              _UpdateProductImagePicker(),
               const SizedBox(height: 16.0),
-              _AddProductTitleInput(),
+              _UpdateProductTitleInput(),
               const SizedBox(height: 16.0),
-              _AddProductPriceInput(),
+              _UpdateProductPriceInput(),
               const SizedBox(height: 16.0),
-              _AddProductSubmitButton()
+              _UpdateProductSubmitButton()
             ],
           ),
         ),
@@ -75,15 +74,15 @@ class _AddProductForm extends StatelessWidget {
   }
 }
 
-class _AddProductImagePicker extends StatelessWidget {
+class _UpdateProductImagePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;
-    return BlocBuilder<AddProductBloc, AddProductState>(
+    return BlocBuilder<UpdateProductBloc, UpdateProductState>(
         builder: (context, state) {
       if (state.imagePath.pure) {
         return GestureDetector(
-          onTap: () => context.read<AddProductBloc>().pickImage(),
+          onTap: () => context.read<UpdateProductBloc>().pickImage(),
           child: Container(
             width: maxWidth,
             height: 300.0,
@@ -101,14 +100,18 @@ class _AddProductImagePicker extends StatelessWidget {
   }
 }
 
-class _AddProductTitleInput extends StatelessWidget {
+class _UpdateProductTitleInput extends StatelessWidget {
+  final _textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddProductBloc, AddProductState>(
+    return BlocBuilder<UpdateProductBloc, UpdateProductState>(
         builder: (context, state) {
+          _textEditingController.text = state.product!.title;
       return TextField(
+        controller: _textEditingController,
         onChanged: (value) =>
-            context.read<AddProductBloc>().titleChanged(value),
+            context.read<UpdateProductBloc>().titleChanged(value),
         decoration: InputDecoration(
           labelText: 'Title',
           errorText: state.title.invalid ? 'invalid title' : null,
@@ -118,14 +121,18 @@ class _AddProductTitleInput extends StatelessWidget {
   }
 }
 
-class _AddProductPriceInput extends StatelessWidget {
+class _UpdateProductPriceInput extends StatelessWidget {
+  final _textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddProductBloc, AddProductState>(
+    return BlocBuilder<UpdateProductBloc, UpdateProductState>(
         builder: (context, state) {
+          _textEditingController.text = state.product!.title;
       return TextField(
+        controller: _textEditingController,
         onChanged: (value) =>
-            context.read<AddProductBloc>().priceChanged(value),
+            context.read<UpdateProductBloc>().priceChanged(value),
         decoration: InputDecoration(
           labelText: 'Price',
           errorText: state.price.invalid ? 'invalid price' : null,
@@ -135,12 +142,12 @@ class _AddProductPriceInput extends StatelessWidget {
   }
 }
 
-class _AddProductSubmitButton extends StatelessWidget {
+class _UpdateProductSubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: () => context.read<AddProductBloc>().submitForm(),
-      child: const Text('Add'),
+      onPressed: () => context.read<UpdateProductBloc>().submitForm(),
+      child: const Text('Update'),
     );
   }
 }

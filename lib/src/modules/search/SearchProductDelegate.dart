@@ -7,6 +7,7 @@ class SearchProductDelegate extends SearchDelegate {
   final SearchProductBloc bloc;
 
   SearchProductDelegate(this.bloc);
+
   @override
   List<Widget> buildActions(BuildContext context) {
     if (this.query.isEmpty) {
@@ -31,7 +32,6 @@ class SearchProductDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-
     bloc.searchProduct(query);
     return BlocListener<SearchProductBloc, SearchProductState>(
       bloc: bloc,
@@ -40,12 +40,20 @@ class SearchProductDelegate extends SearchDelegate {
           showSuggestions(context);
         }
       },
-      child: query.isEmpty ? Container() : ListView.builder(
-        itemCount: bloc.state.products!.length,
-        itemBuilder: (context, index) {
-          return Text(bloc.state.products![index].title);
-        },
-      ),
+      child: query.isEmpty
+          ? Container()
+          : ListView.builder(
+              itemCount: bloc.state.products!.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    bloc.state.products![index].title,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../setting/SettingScreen.dart';
 import '../search/SearchProductBloc.dart';
 import '../../repositories/ProductRepository.dart';
 import '../product/dashboard/DashboardProductScreen.dart';
@@ -50,7 +51,7 @@ class _HomeView extends StatelessWidget {
           case HomeStatus.ProductScreen:
             return DashboardProductScreen();
           case HomeStatus.SettingScreen:
-            return Text("Setting");
+            return SettingScreen();
           default:
             return Text("Empty");
         }
@@ -76,8 +77,8 @@ class _HomeDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.info),
-            title: Text("About"),
+            leading: Icon(Icons.settings),
+            title: Text("Setting"),
             onTap: () {
               Navigator.pop(context);
               context.read<HomeBloc>().add(SettingEvent());

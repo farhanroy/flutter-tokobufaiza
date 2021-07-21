@@ -18,7 +18,7 @@ class App extends StatelessWidget {
         child: MaterialApp(
           title: Constants.APP_NAME,
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primaryColor: Color(0xFF6B22DC),
           ),
           onGenerateRoute: RouteService.generateRoute,
           initialRoute: RouteName.SplashScreen,
