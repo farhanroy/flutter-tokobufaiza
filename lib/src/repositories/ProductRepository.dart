@@ -90,8 +90,21 @@ class ProductRepository {
       }
       return products;
     } catch (e) {
-      print(e);
       throw SearchProductFailure();
+    }
+  }
+
+  Future<List<Product>?> updateProduct(Product product) async {
+    try {
+      var client = await _databaseHelper.db;
+      await client!.update(
+          Constants.PRODUCT_TABLE,
+          product.toMap(),
+          where: 'id = ?',
+          whereArgs: [product.id]
+      );
+    } catch (e) {
+      throw CreateProductFailure();
     }
   }
 }

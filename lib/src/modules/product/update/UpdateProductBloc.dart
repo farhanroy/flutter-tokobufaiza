@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -79,15 +81,31 @@ class UpdateProductBloc extends Cubit<UpdateProductState> {
 
   void initialForm() {
     emit(state.copyWith(product: product));
+    emit(
+      state.copyWith(
+          title: DefaultValidator.dirty(product.title),
+          price: DefaultValidator.dirty(product.price),
+          imagePath: DefaultValidator.dirty(product.imagePath)),
+    );
   }
 
   Future<void> pickImage() async {
     final ImagePicker _picker = ImagePicker();
     try {
-      var pickedFile = await _picker.getImage(
+      var pickedFile = await _picker.pickImage(
         source: ImageSource.camera,
       );
       await compressFile(pickedFile!.path);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> deleteImage() async {
+    final _imageFile = File(product.imagePath);
+    try {
+      await _imageFile.delete();
+      emit(state.copyWith(imagePath: DefaultValidator.pure()));
     } catch (e) {
       throw Exception(e);
     }
@@ -119,7 +137,7 @@ class UpdateProductBloc extends Cubit<UpdateProductState> {
           title: state.title.value!,
           price: state.price.value!,
           imagePath: state.imagePath.value!);
-      await productRepository.createProduct(product);
+      await productRepository.updateProduct(product);
       emit(state.copyWith(status: FormzStatus.submissionSuccess));
     } on Exception {
       emit(state.copyWith(status: FormzStatus.submissionFailure));

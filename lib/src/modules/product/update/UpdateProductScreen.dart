@@ -20,7 +20,8 @@ class UpdateProductScreen extends StatelessWidget {
     return BlocProvider<UpdateProductBloc>(
       create: (_) => UpdateProductBloc(
           product: product,
-          productRepository: context.read<ProductRepository>())..initialForm(),
+          productRepository: context.read<ProductRepository>())
+        ..initialForm(),
       child: _UpdateProductView(),
     );
   }
@@ -44,13 +45,24 @@ class _UpdateProductView extends StatelessWidget {
 
 class _UpdateProductForm extends StatelessWidget {
 
+  final TextEditingController _inputTitle = TextEditingController();
+  final TextEditingController _inputPrice = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    setInitialValue(context);
     return BlocListener<UpdateProductBloc, UpdateProductState>(
       listener: (context, state) {
         if (state.status.isSubmissionSuccess) {
           Navigator.pushNamedAndRemoveUntil(
               context, RouteName.HomeScreen, (route) => false);
+        }
+        if (state.status.isSubmissionFailure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(content: Text('Update Failure')),
+            );
         }
       },
       child: Padding(
@@ -61,9 +73,9 @@ class _UpdateProductForm extends StatelessWidget {
               const SizedBox(height: 54.0),
               _UpdateProductImagePicker(),
               const SizedBox(height: 16.0),
-              _UpdateProductTitleInput(),
+              _UpdateProductTitleInput(inputTitle: _inputTitle,),
               const SizedBox(height: 16.0),
-              _UpdateProductPriceInput(),
+              _UpdateProductPriceInput(inputPrice: _inputPrice,),
               const SizedBox(height: 16.0),
               _UpdateProductSubmitButton()
             ],
@@ -72,44 +84,76 @@ class _UpdateProductForm extends StatelessWidget {
       ),
     );
   }
+
+  void setInitialValue(BuildContext context) {
+    var product = context.read<UpdateProductBloc>().product;
+    _inputTitle.text = product.title;
+    _inputPrice.text = product.price;
+
+    context.read<UpdateProductBloc>().initialForm();
+  }
 }
 
 class _UpdateProductImagePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;
+    final theme = Theme.of(context);
     return BlocBuilder<UpdateProductBloc, UpdateProductState>(
         builder: (context, state) {
-      if (state.imagePath.pure) {
+      if (!state.imagePath.pure) {
+        return Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(96.0),
+              child: Image.file(
+                File(state.imagePath.value!),
+                fit: BoxFit.fill,
+                width: maxWidth / 2,
+                height: maxWidth / 2,
+              ),
+            ),
+            FloatingActionButton(
+
+              backgroundColor: theme.scaffoldBackgroundColor,
+              child: Icon(Icons.delete, color: Colors.redAccent),
+              onPressed: () =>
+                  context.read<UpdateProductBloc>().deleteImage(),
+            )
+          ],
+        );
+      } else {
         return GestureDetector(
           onTap: () => context.read<UpdateProductBloc>().pickImage(),
           child: Container(
-            width: maxWidth,
-            height: 300.0,
-            color: Colors.grey,
+            width: maxWidth/2,
+            height: maxWidth/2,
+            decoration: BoxDecoration(
+              borderRadius:BorderRadius.circular(96.0),
+              color: Colors.grey,
+            ),
             child: Icon(
               Icons.add_a_photo,
               color: Colors.black54,
             ),
           ),
         );
-      } else {
-        return Image.file(File(state.imagePath.value!));
       }
     });
   }
 }
 
 class _UpdateProductTitleInput extends StatelessWidget {
-  final _textEditingController = TextEditingController();
+  final TextEditingController? inputTitle;
+
+  const _UpdateProductTitleInput({Key? key, this.inputTitle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UpdateProductBloc, UpdateProductState>(
         builder: (context, state) {
-          _textEditingController.text = state.product!.title;
       return TextField(
-        controller: _textEditingController,
+        controller: inputTitle,
         onChanged: (value) =>
             context.read<UpdateProductBloc>().titleChanged(value),
         decoration: InputDecoration(
@@ -122,15 +166,15 @@ class _UpdateProductTitleInput extends StatelessWidget {
 }
 
 class _UpdateProductPriceInput extends StatelessWidget {
-  final _textEditingController = TextEditingController();
+  final TextEditingController? inputPrice;
 
+  const _UpdateProductPriceInput({Key? key, this.inputPrice}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UpdateProductBloc, UpdateProductState>(
         builder: (context, state) {
-          _textEditingController.text = state.product!.title;
       return TextField(
-        controller: _textEditingController,
+        controller: inputPrice,
         onChanged: (value) =>
             context.read<UpdateProductBloc>().priceChanged(value),
         decoration: InputDecoration(
