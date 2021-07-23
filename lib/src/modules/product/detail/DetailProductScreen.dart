@@ -49,14 +49,14 @@ class _DetailProductView extends StatelessWidget {
             IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () => _showDeleteDialog(context)),
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                Navigator.pushNamed(context, RouteName.UpdateProductScreen,
-                    arguments: ScreenArguments(context.read<DetailProductBloc>().state.product!));
-              },
-            )
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.edit),
+          onPressed: () {
+            Navigator.pushNamed(context, RouteName.UpdateProductScreen,
+                arguments: ScreenArguments(context.read<DetailProductBloc>().state.product!));
+          },
         ),
         body: BlocBuilder<DetailProductBloc, DetailProductState>(
             builder: (context, state) {
@@ -87,15 +87,15 @@ class _DetailProductView extends StatelessWidget {
           content: const Text("Are you sure to delete product ?"),
           actions: <Widget>[
             TextButton(
-              child: new Text("Yes"),
+              child: const Text("Yes"),
               onPressed: () {
                 bloc.deleteProduct();
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: new Text("Cancel"),
-              onPressed: () {},
+              child: const Text("Cancel", style: TextStyle(color: Colors.redAccent),),
+              onPressed: () => Navigator.pop(context),
             ),
           ],
         );

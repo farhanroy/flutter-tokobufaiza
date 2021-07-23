@@ -31,19 +31,9 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () =>
-                showSearch(
-                    context: context,
-                    delegate: SearchProductDelegate(
-                      context.read<SearchProductBloc>()
-                    ),
-                ),
-          )
-        ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56.0),
+        child: _HomeAppBar(),
       ),
       drawer: _HomeDrawer(),
       body: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
@@ -59,6 +49,41 @@ class _HomeView extends StatelessWidget {
     );
   }
 }
+
+class _HomeAppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case HomeStatus.ProductScreen:
+              return AppBar(
+                title: const Text('Dashboard'),
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () =>
+                        showSearch(
+                          context: context,
+                          delegate: SearchProductDelegate(
+                              context.read<SearchProductBloc>()
+                          ),
+                        ),
+                  )
+                ],
+              );
+            case HomeStatus.SettingScreen:
+              return AppBar(
+                title: const Text('Setting'),
+              );
+            default:
+              return Container();
+          }
+        }
+    );
+  }
+}
+
 
 class _HomeDrawer extends StatelessWidget {
   @override
