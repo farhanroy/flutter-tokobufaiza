@@ -113,25 +113,40 @@ class _PopulateDetailProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     File imagePath = File(product.imagePath);
+    final maxWidth = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Column(
         children: [
-          Image.file(imagePath),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(96.0),
+            child: Image.file(
+              File(imagePath.path),
+              fit: BoxFit.fill,
+              width: maxWidth / 2,
+              height: maxWidth / 2,
+            ),
+          ),
           const SizedBox(
-            height: 20,
+            height: 24,
           ),
-          Text(
-            product.title,
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Product'),
+              Text(product.title,),
+            ],
           ),
           const SizedBox(
-            height: 10,
+            height: 16,
           ),
-          Text(
-            "Price: ${product.price}",
-            style: TextStyle(fontSize: 20),
-          )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Price'),
+              Text(product.price),
+            ],
+          ),
         ],
       ),
     );
